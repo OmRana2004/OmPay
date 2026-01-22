@@ -14,9 +14,29 @@ model User {
   lastName  String
   email     String   @unique
   password  String
-  // transactions Transactions[]
-  // wallet    Wallet?
-  // PhNumber  PhoneNumber?
+  transactions Transactions[]
+  wallet    Wallet?
+  PhNumber  PhoneNumber?
+}
 
+model Wallet {
+  id       String   @id      @default(uuid())
+  balance  Int      @default(0)
+  userId   String   @unique
+  user     User     @relation(fields: [userId],references: [id])
+}
+
+model PhoneNumber {
+  id        Int   @id  @default(autoincrement())
+  number    String     @unique
+  userId    String  @unique
+  user      User    @relation(fields: [userId],references: [id])
+}
+
+model Transactions {
+  id      String  @id   @default(uuid())
+  userId  String
+  user    User  @relation(fields: [userId], references: [id])
+  amount  String
 }
 

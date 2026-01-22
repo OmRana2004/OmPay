@@ -1,6 +1,7 @@
 import express from "express"
-import router from "./routes/pageRoutes"
 import cors from "cors";
+import dotenv from "dotenv"
+import router from "./routes/pageRoutes"
 
 const app = express();
 app.use(cors());
