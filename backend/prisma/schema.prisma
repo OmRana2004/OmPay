@@ -14,10 +14,12 @@ model User {
   lastName  String
   email     String   @unique
   password  String
-  transactions Transactions[]
   wallet    Wallet?
   PhNumber  PhoneNumber?
+  sentTransactions     Transaction[] @relation("SentTransactions")
+  receivedTransactions Transaction[] @relation("ReceivedTransactions")
 }
+
 
 model Wallet {
   id       String   @id      @default(uuid())
@@ -33,10 +35,13 @@ model PhoneNumber {
   user      User    @relation(fields: [userId],references: [id])
 }
 
-model Transactions {
-  id      String  @id   @default(uuid())
-  userId  String
-  user    User  @relation(fields: [userId], references: [id])
-  amount  String
+model Transaction {
+  id        String   @id @default(uuid())
+  amount    Int
+  fromId    String
+  toId      String
+  from      User     @relation("SentTransactions", fields: [fromId], references: [id])
+  to        User     @relation("ReceivedTransactions", fields: [toId], references: [id])
+  createdAt DateTime @default(now())
 }
 
