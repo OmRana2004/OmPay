@@ -2,41 +2,36 @@ import { Response } from "express";
 import { AuthRequest } from "../../middlewares/authMiddleware";
 import { prismaClient } from "../../db";
 
-const transactions = async (req: AuthRequest, res: Response) => {
+const transactionHistory = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.userId as string;
 
-    // Safety check 
     if (!userId) {
-      return res.status(401).json({
-        message: "Unauthorized",
-      });
+      return res.status(401).json({ message: "Unauthorized" });
     }
 
-    // Fetch all transactions of this user
     const transactions = await prismaClient.transaction.findMany({
       where: {
-        OR: [
-          { fromId: userId },
-          { toId: userId },
-        ],
+        OR: [{ fromId: userId }, { toId: userId }],
       },
-      orderBy: {
-        createdAt: "desc",
+      orderBy: { createdAt: "desc" },
+      include: {
+        from: {
+          select: { firstName: true, lastName: true },
+        },
+        to: {
+          select: { firstName: true, lastName: true },
+        },
       },
     });
 
-    // Success response
     return res.status(200).json({
-      message: "Transactions fetched successfully",
+      userId,
       transactions,
     });
   } catch (error) {
-    console.error("Transaction Error:", error);
-    return res.status(500).json({
-      message: "Internal Server Error",
-    });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-export default transactions;
+export default transactionHistory;

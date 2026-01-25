@@ -11,21 +11,13 @@ const authMiddleware = (
   next: NextFunction
 ) => {
   try {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader) {
-      return res.status(401).json({
-        success: false,
-        message: "Authorization header missing",
-      });
-    }
-
-    const token = authHeader.split(" ")[1]; // Bearer <token>
+    // ✅ READ TOKEN FROM COOKIE
+    const token = req.cookies?.token;
 
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Token not found",
+        message: "Not authenticated",
       });
     }
 
@@ -42,7 +34,7 @@ const authMiddleware = (
       userId: string;
     };
 
-    req.userId = decoded.userId;   // correct key
+    req.userId = decoded.userId; //  same as before
     next();
   } catch (error) {
     console.error("Auth Error:", error);

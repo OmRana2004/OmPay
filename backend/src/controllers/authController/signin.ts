@@ -7,7 +7,6 @@ const signin = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    // Validate input
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -15,7 +14,6 @@ const signin = async (req: Request, res: Response) => {
       });
     }
 
-    // Find user
     const user = await prismaClient.user.findUnique({
       where: { email },
     });
@@ -27,7 +25,6 @@ const signin = async (req: Request, res: Response) => {
       });
     }
 
-    // Compare password
     const isPasswordValid = await bcrypt.compare(
       password,
       user.password
@@ -40,28 +37,32 @@ const signin = async (req: Request, res: Response) => {
       });
     }
 
-    // JWT Secret
     const secret = process.env.JWT_SECRET;
 
     if (!secret) {
-      console.error("JWT_SECRET is missing in .env");
       return res.status(500).json({
         success: false,
         message: "Server configuration error",
       });
     }
 
-    // Generate token
     const token = jwt.sign(
       { userId: user.id },
       secret,
       { expiresIn: "1h" }
     );
 
+    // ✅ SET JWT IN HTTPONLY COOKIE
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false, // true in production (HTTPS)
+      maxAge: 60 * 60 * 1000, // 1 hour
+    });
+
     return res.status(200).json({
       success: true,
-      message: "Signin successful ",
-      token,
+      message: "Signin successful",
       user: {
         id: user.id,
         firstName: user.firstName,
