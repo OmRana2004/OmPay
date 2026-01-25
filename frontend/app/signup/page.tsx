@@ -11,7 +11,7 @@ export default function Signup() {
     firstName: "",
     lastName: "",
     email: "",
-    phone: "",      // ✅ MUST be `phone`
+    phone: "",      
     password: "",
   });
 
@@ -31,7 +31,7 @@ export default function Signup() {
 
     setLoading(true);
     try {
-      await api.post("/signup", form); // ✅ backend now receives phone
+      await api.post("/signup", form); 
       router.push("/signin");
     } catch (e: any) {
       alert(e.response?.data?.message || "Signup failed");
