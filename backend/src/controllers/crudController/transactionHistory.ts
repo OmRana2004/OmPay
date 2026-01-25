@@ -2,7 +2,7 @@ import { Response } from "express";
 import { AuthRequest } from "../../middlewares/authMiddleware";
 import { prismaClient } from "../../db";
 
-const transaction = async (req: AuthRequest, res: Response) => {
+const transactions = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.userId as string;
 
@@ -39,4 +39,4 @@ const transaction = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export default transaction;
+export default transactions;
