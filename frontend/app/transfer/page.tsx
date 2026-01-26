@@ -21,7 +21,7 @@ export default function Transfer() {
         amount: Number(amount),
       });
 
-      // ✅ redirect after successful transfer
+      // redirect after successful transfer
       router.push("/dashboard");
     } catch (err: any) {
       alert(err.response?.data?.message || "Transfer failed");

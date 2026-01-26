@@ -36,7 +36,7 @@ export default function Signin() {
       >
         {/* Header */}
         <h2 className="text-2xl font-semibold text-gray-900">
-          Welcome back
+          Welcome Sir
         </h2>
         <p className="text-sm text-gray-500 mb-6">
           Sign in to continue to OmPay
