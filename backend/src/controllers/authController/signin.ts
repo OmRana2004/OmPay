@@ -52,7 +52,7 @@ const signin = async (req: Request, res: Response) => {
       { expiresIn: "1h" }
     );
 
-    // ✅ SET JWT IN HTTPONLY COOKIE
+    // SET JWT IN HTTPONLY COOKIE
     res.cookie("token", token, {
       httpOnly: true,
       sameSite: "lax",

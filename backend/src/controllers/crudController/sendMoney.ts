@@ -5,7 +5,7 @@ import { prismaClient } from "../../db";
 const sendMoney = async (req: AuthRequest, res: Response) => {
   try {
     const fromUserId = req.userId;
-    const { to, amount } = req.body; // 👈 CHANGE HERE
+    const { to, amount } = req.body; 
 
     if (!fromUserId) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -15,7 +15,7 @@ const sendMoney = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ message: "Invalid input" });
     }
 
-    // 🔥 Find receiver by EMAIL
+    // Find receiver by EMAIL
     const toUser = await prismaClient.user.findUnique({
       where: { email: to },
     });
