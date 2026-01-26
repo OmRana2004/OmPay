@@ -10,16 +10,21 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3000", // frontend
-    credentials: true,               // allow cookies
+    origin: [
+      "http://localhost:3000",
+      "https://ompay.vercel.app",
+    ],
+    credentials: true,
   })
 );
 
 app.use(express.json());
-app.use(cookieParser()); 
+app.use(cookieParser());
 
 app.use("/api/v1", router);
 
-app.listen(3001, () => {
-  console.log("server is running on port 3001");
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
