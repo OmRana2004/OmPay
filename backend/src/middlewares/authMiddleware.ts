@@ -11,7 +11,7 @@ const authMiddleware = (
   next: NextFunction
 ) => {
   try {
-    // ✅ READ TOKEN FROM COOKIE
+    //  READ TOKEN FROM COOKIE
     const token = req.cookies?.token;
 
     if (!token) {
