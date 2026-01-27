@@ -1,27 +1,15 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const protectedRoutes = ["/dashboard", "/transfer", "/transactions"];
-const authRoutes = ["/signin", "/signup"];
-
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get("token")?.value;
   const { pathname } = req.nextUrl;
 
-  // 🔒 Not logged in → protected pages
-  if (
-    !token &&
-    protectedRoutes.some((route) => pathname.startsWith(route))
-  ) {
-    return NextResponse.redirect(new URL("/signin", req.url));
-  }
+  // 🔹 Direct access control NOT here
+  // 🔹 Backend APIs handle real auth
 
-  // 🔁 Logged in → auth pages
-  if (
-    token &&
-    authRoutes.some((route) => pathname.startsWith(route))
-  ) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+  // Optional: prevent accessing root
+  if (pathname === "/") {
+    return NextResponse.redirect(new URL("/signin", req.url));
   }
 
   return NextResponse.next();
@@ -29,6 +17,7 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
+    "/",
     "/dashboard/:path*",
     "/transfer/:path*",
     "/transactions/:path*",
