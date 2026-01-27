@@ -5,31 +5,39 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import api from "../lib/api";
 
+/* ================= Types ================= */
+
+type BalanceResponse = {
+  balance: number;
+};
+
+/* ========================================= */
+
 export default function Navbar() {
   const router = useRouter();
   const [balance, setBalance] = useState<number | null>(null);
 
   useEffect(() => {
-    async function loadBalance() {
+    const loadBalance = async () => {
       try {
-        const res = await api.get("/balance");
+        const res = await api.get<BalanceResponse>("/balance");
         setBalance(res.data.balance);
       } catch {
         setBalance(null);
       }
-    }
+    };
 
     loadBalance();
   }, []);
 
-  async function logout() {
+  const logout = async () => {
     try {
       await api.post("/logout");
     } finally {
       setBalance(null);
       router.replace("/signin");
     }
-  }
+  };
 
   return (
     <motion.nav

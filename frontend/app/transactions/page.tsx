@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import api from "../../lib/api";
 import Navbar from "../../components/Navbar";
 
+/* ================= Types ================= */
+
 type Transaction = {
   id: number;
   amount: number;
@@ -20,6 +22,13 @@ type Transaction = {
     lastName: string;
   };
 };
+
+type TransactionsResponse = {
+  transactions: Transaction[];
+  userId: string;
+};
+
+/* ========================================= */
 
 /* ================= Skeleton ================= */
 function TransactionSkeleton() {
@@ -44,9 +53,10 @@ export default function Transactions() {
   useEffect(() => {
     const loadTransactions = async () => {
       try {
-        const res = await api.get("/transactions");
-        setTxns(res.data.transactions || []);
-        setUserId(res.data.userId || null);
+        const res = await api.get<TransactionsResponse>("/transactions");
+
+        setTxns(res.data.transactions);
+        setUserId(res.data.userId);
       } catch (err: any) {
         if (err?.response?.status === 401) {
           router.replace("/signin");
@@ -67,30 +77,23 @@ export default function Transactions() {
         <div className="max-w-md mx-auto space-y-6">
 
           {/* Header */}
-<div className="flex items-center gap-3">
-  <button
-    onClick={() => router.push("/dashboard")}
-    className="
-      flex items-center justify-center
-      h-9 w-9 rounded-full
-      bg-white border border-gray-200
-      text-gray-700
-      shadow-sm
-      active:scale-95 transition
-    "
-  >
-    ←
-  </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="flex items-center justify-center h-9 w-9 rounded-full bg-white border border-gray-200 text-gray-700 shadow-sm active:scale-95 transition"
+            >
+              ←
+            </button>
 
-  <div>
-    <h1 className="text-xl font-semibold text-gray-900">
-      Transactions
-    </h1>
-    <p className="text-sm text-gray-500 mt-0.5">
-      Your recent payments & transfers
-    </p>
-  </div>
-</div>
+            <div>
+              <h1 className="text-xl font-semibold text-gray-900">
+                Transactions
+              </h1>
+              <p className="text-sm text-gray-500 mt-0.5">
+                Your recent payments & transfers
+              </p>
+            </div>
+          </div>
 
           {/* Loading */}
           {loading && (
@@ -101,7 +104,7 @@ export default function Transactions() {
             </div>
           )}
 
-          {/* Empty State */}
+          {/* Empty */}
           {!loading && txns.length === 0 && (
             <div className="mt-24 text-center">
               <p className="text-sm text-gray-400">
@@ -113,7 +116,7 @@ export default function Transactions() {
             </div>
           )}
 
-          {/* Transactions List */}
+          {/* List */}
           {!loading && txns.length > 0 && (
             <div className="space-y-3">
               {txns.map((txn) => {
@@ -125,7 +128,6 @@ export default function Transactions() {
                     key={txn.id}
                     className="flex justify-between items-center bg-white border border-gray-200 rounded-2xl px-5 py-4 shadow-sm hover:shadow-md transition"
                   >
-                    {/* Left */}
                     <div className="space-y-1">
                       <p className="font-medium text-gray-900">
                         {isCredit
@@ -146,7 +148,6 @@ export default function Transactions() {
                       </p>
                     </div>
 
-                    {/* Right */}
                     <div
                       className={`text-base font-semibold ${
                         isCredit ? "text-green-600" : "text-red-600"
@@ -160,7 +161,6 @@ export default function Transactions() {
             </div>
           )}
 
-          {/* Footer */}
           {!loading && txns.length > 0 && (
             <p className="pt-6 text-center text-xs text-gray-400">
               Showing your latest transactions

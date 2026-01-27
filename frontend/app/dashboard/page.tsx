@@ -5,6 +5,21 @@ import { useRouter } from "next/navigation";
 import api from "../../lib/api";
 import Navbar from "../../components/Navbar";
 
+/* ================= Types ================= */
+
+type BalanceResponse = {
+  balance: number;
+};
+
+type MeResponse = {
+  user: {
+    firstName: string;
+    email?: string;
+  };
+};
+
+/* ========================================= */
+
 export default function Dashboard() {
   const router = useRouter();
 
@@ -16,8 +31,8 @@ export default function Dashboard() {
     const loadDashboard = async () => {
       try {
         const [balanceRes, meRes] = await Promise.all([
-          api.get("/balance"),
-          api.get("/me"),
+          api.get<BalanceResponse>("/balance"),
+          api.get<MeResponse>("/me"),
         ]);
 
         setBalance(balanceRes.data.balance);
@@ -39,17 +54,13 @@ export default function Dashboard() {
         <Navbar />
         <main className="min-h-[calc(100vh-64px)] bg-[#F6F7FB] px-4 py-6 flex justify-center">
           <div className="w-full max-w-md space-y-6 animate-pulse">
-            
-            {/* Greeting */}
             <div className="space-y-2">
               <div className="h-5 w-32 rounded bg-gray-200" />
               <div className="h-3 w-40 rounded bg-gray-100" />
             </div>
 
-            {/* Balance Card */}
             <div className="h-32 rounded-2xl bg-gray-200" />
 
-            {/* Buttons */}
             <div className="space-y-3">
               <div className="h-12 rounded-xl bg-gray-200" />
               <div className="h-12 rounded-xl bg-gray-100" />
@@ -65,9 +76,8 @@ export default function Dashboard() {
     <>
       <Navbar />
 
-      <main className="min-h-[calc(100vh-64px)] px-4 py-6 sm:px-6 bg-[#F6F7FB]">
+      <main className="min-h-[calc(100vh-64px)] px-4 py-6 bg-[#F6F7FB]">
         <div className="max-w-md mx-auto space-y-6">
-          
           {/* Greeting */}
           <div>
             <h1 className="text-xl font-semibold text-gray-900">
@@ -95,20 +105,19 @@ export default function Dashboard() {
           <div className="space-y-3">
             <button
               onClick={() => router.push("/transfer")}
-              className="w-full rounded-xl bg-gray-900 py-3.5 text-base font-medium text-white transition hover:bg-gray-800 active:scale-[0.98] cursor-pointer"
+              className="w-full rounded-xl bg-gray-900 py-3.5 text-base font-medium text-white hover:bg-gray-800 active:scale-[0.98] cursor-pointer"
             >
               Send Money
             </button>
 
             <button
               onClick={() => router.push("/transactions")}
-              className="w-full rounded-xl border border-gray-200 bg-white py-3.5 text-base font-medium text-gray-900 transition hover:bg-gray-100 active:scale-[0.98] cursor-pointer"
+              className="w-full rounded-xl border border-gray-200 bg-white py-3.5 text-base font-medium text-gray-900 hover:bg-gray-100 active:scale-[0.98] cursor-pointer"
             >
               View Transactions
             </button>
           </div>
 
-          {/* Footer */}
           <p className="pt-6 text-center text-xs text-gray-400">
             Bank-grade security • Instant transfers
           </p>

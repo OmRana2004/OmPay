@@ -6,6 +6,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import api from "../../lib/api";
 import Navbar from "../../components/Navbar";
 
+/* ================= Types ================= */
+
+type TransferResponse = {
+  transactionId: string;
+};
+
+/* ========================================= */
+
 export default function Transfer() {
   const router = useRouter();
 
@@ -22,14 +30,17 @@ export default function Transfer() {
     successSound.current.volume = 0.2;
   }, []);
 
-  async function send() {
+  const send = async () => {
     const amt = Number(amount);
     if (!to || !amt || amt <= 0 || loading) return;
 
     setLoading(true);
 
     try {
-      const res = await api.post("/transfer", { to, amount: amt });
+      const res = await api.post<TransferResponse>("/transfer", {
+        to,
+        amount: amt,
+      });
 
       setTransactionId(res.data.transactionId);
       setStatus("success");
@@ -41,12 +52,13 @@ export default function Transfer() {
         router.replace("/signin");
         return;
       }
+
       setStatus("error");
       setTimeout(() => setStatus(null), 2500);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <>
@@ -114,7 +126,6 @@ export default function Transfer() {
           transition={{ duration: 0.4, ease: "easeOut" }}
           className="max-w-md mx-auto space-y-6"
         >
-          {/* Header */}
           <div>
             <h1 className="text-xl font-semibold text-gray-900">
               Send Money
@@ -124,14 +135,12 @@ export default function Transfer() {
             </p>
           </div>
 
-          {/* Card */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="rounded-2xl bg-white border border-gray-200 p-6 shadow-sm space-y-5"
           >
-            {/* To */}
             <div>
               <label className="block text-sm font-medium text-gray-600">
                 Phone number or email
@@ -140,13 +149,10 @@ export default function Transfer() {
                 value={to}
                 onChange={(e) => setTo(e.target.value)}
                 placeholder="9876543210 or user@email.com"
-                className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-3
-                           focus:border-gray-900 focus:ring-1 focus:ring-gray-900
-                           outline-none text-sm"
+                className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 outline-none text-sm"
               />
             </div>
 
-            {/* Amount */}
             <div>
               <label className="block text-sm font-medium text-gray-600">
                 Amount
@@ -158,21 +164,15 @@ export default function Transfer() {
                 }
                 inputMode="numeric"
                 placeholder="Enter amount"
-                className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-3
-                           focus:border-gray-900 focus:ring-1 focus:ring-gray-900
-                           outline-none text-sm"
+                className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 outline-none text-sm"
               />
             </div>
 
-            {/* Button */}
             <motion.button
               whileTap={{ scale: 0.97 }}
               onClick={send}
               disabled={loading || !to || !amount}
-              className="w-full rounded-xl bg-gray-900 py-3.5
-                         text-white text-base font-medium
-                         hover:bg-gray-800 transition
-                         disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-xl bg-gray-900 py-3.5 text-white text-base font-medium hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Sending…" : "Send Money"}
             </motion.button>
