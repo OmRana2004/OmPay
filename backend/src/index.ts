@@ -8,18 +8,41 @@ dotenv.config();
 
 const app = express();
 
+/* ================= CORS ================= */
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://ompay.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:3000", // frontend
-    credentials: true,               // allow cookies
+    origin: (origin, callback) => {
+      // allow server-to-server / Postman / mobile apps
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true, // cookies allowed
   })
 );
 
+/* ======================================== */
+
 app.use(express.json());
-app.use(cookieParser()); 
+app.use(cookieParser());
 
 app.use("/api/v1", router);
 
-app.listen(3001, () => {
-  console.log("server is running on port 3001");
+/* ================= PORT ================= */
+
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
+
