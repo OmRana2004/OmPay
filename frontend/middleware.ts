@@ -8,9 +8,9 @@ export function middleware(req: NextRequest) {
   // 🔹 Backend APIs handle real auth
 
   // Optional: prevent accessing root
-  if (pathname === "/") {
-    return NextResponse.redirect(new URL("/signin", req.url));
-  }
+//   if (pathname === "/") {
+//     return NextResponse.redirect(new URL("/", req.url));
+//   }
 
   return NextResponse.next();
 }
