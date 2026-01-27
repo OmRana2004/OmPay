@@ -32,7 +32,7 @@ export default function Home() {
 
           {/* Title */}
           <h1 className="text-2xl font-semibold text-gray-900">
-            OmPay
+            OmPayy
           </h1>
 
           {/* Subtitle */}

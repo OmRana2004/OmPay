@@ -23,7 +23,7 @@ export default function Signin() {
     try {
       setLoading(true);
 
-      // 🍪 Backend sets HTTP-only cookie
+      // Backend sets HTTP-only cookie
       await api.post("/signin", {
         email,
         password,
