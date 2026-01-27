@@ -47,7 +47,7 @@ export default function Home() {
               className="w-full rounded-xl bg-gray-900 py-3.5
                          text-white text-base font-medium
                          hover:bg-gray-800 transition
-                         active:scale-[0.98]"
+                         active:scale-[0.98] cursor-pointer"
             >
               Get Started
             </button>
@@ -57,7 +57,7 @@ export default function Home() {
               className="w-full rounded-xl border border-gray-200 py-3.5
                          text-gray-900 text-base font-medium bg-white
                          hover:bg-gray-100 transition
-                         active:scale-[0.98]"
+                         active:scale-[0.98] cursor-pointer "
             >
               Sign In
             </button>

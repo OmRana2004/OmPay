@@ -99,7 +99,7 @@ export default function Signin() {
           whileTap={{ scale: 0.97 }}
           onClick={handleSignin}
           disabled={loading}
-          className="mt-6 w-full bg-gray-900 text-white py-3 rounded-xl font-medium disabled:opacity-50"
+          className="mt-6 w-full bg-gray-900 text-white py-3 rounded-xl font-medium disabled:opacity-50 cursor-pointer"
         >
           {loading ? "Signing in..." : "Sign In"}
         </motion.button>

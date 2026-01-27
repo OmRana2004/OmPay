@@ -67,14 +67,30 @@ export default function Transactions() {
         <div className="max-w-md mx-auto space-y-6">
 
           {/* Header */}
-          <div>
-            <h1 className="text-xl font-semibold text-gray-900">
-              Transactions
-            </h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Your recent payments & transfers
-            </p>
-          </div>
+<div className="flex items-center gap-3">
+  <button
+    onClick={() => router.push("/dashboard")}
+    className="
+      flex items-center justify-center
+      h-9 w-9 rounded-full
+      bg-white border border-gray-200
+      text-gray-700
+      shadow-sm
+      active:scale-95 transition
+    "
+  >
+    ←
+  </button>
+
+  <div>
+    <h1 className="text-xl font-semibold text-gray-900">
+      Transactions
+    </h1>
+    <p className="text-sm text-gray-500 mt-0.5">
+      Your recent payments & transfers
+    </p>
+  </div>
+</div>
 
           {/* Loading */}
           {loading && (

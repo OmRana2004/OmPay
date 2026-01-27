@@ -156,7 +156,7 @@ export default function Signup() {
           disabled={loading}
           className="mt-6 w-full rounded-xl bg-gray-900 text-white py-3
                      font-medium hover:bg-gray-800 active:scale-[0.98]
-                     disabled:opacity-50"
+                     disabled:opacity-50  cursor-pointer"
         >
           {loading ? "Creating account…" : "Sign Up"}
         </button>
