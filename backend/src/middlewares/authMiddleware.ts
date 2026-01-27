@@ -11,18 +11,19 @@ const authMiddleware = (
   next: NextFunction
 ) => {
   try {
-    //  READ TOKEN FROM COOKIE
-    const token = req.cookies?.token;
+    // READ TOKEN FROM AUTHORIZATION HEADER
+    const authHeader = req.headers.authorization;
 
-    if (!token) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
         success: false,
         message: "Not authenticated",
       });
     }
 
-    const secret = process.env.JWT_SECRET as string;
+    const token = authHeader.split(" ")[1];
 
+    const secret = process.env.JWT_SECRET;
     if (!secret) {
       return res.status(500).json({
         success: false,
@@ -34,7 +35,7 @@ const authMiddleware = (
       userId: string;
     };
 
-    req.userId = decoded.userId; //  same as before
+    req.userId = decoded.userId;
     next();
   } catch (error) {
     console.error("Auth Error:", error);
