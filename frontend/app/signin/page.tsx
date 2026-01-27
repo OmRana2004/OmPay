@@ -39,17 +39,17 @@ export default function Signin() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <main className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
         className="w-full max-w-md bg-white border border-gray-200 rounded-2xl p-6 shadow-sm"
       >
-        <h2 className="text-2xl font-semibold text-gray-900">
-          Welcome back
+        <h2 className="text-2xl font-semibold text-center text-gray-900">
+          Welcome
         </h2>
-        <p className="text-sm text-gray-500 mb-6">
+        <p className="text-sm text-center text-gray-500 mb-6">
           Sign in to continue
         </p>
 
@@ -58,25 +58,40 @@ export default function Signin() {
           Email
         </label>
         <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:ring-gray-300 outline-none"
-          placeholder="you@example.com"
-        />
+  type="email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  className="
+    mt-1 w-full rounded-xl
+    border border-gray-200
+    bg-white
+    px-4 py-3
+    text-sm text-gray-900
+    placeholder-gray-400
+    focus:outline-none focus:ring-2 focus:ring-indigo-200
+  "
+  placeholder="you@example.com"
+/>
 
         {/* Password */}
         <label className="mt-4 block text-sm text-gray-600 font-medium">
           Password
         </label>
         <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSignin()}
-          className="mt-1 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:ring-gray-300 outline-none"
-          placeholder="••••••••"
-        />
+  type="password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  className="
+    mt-1 w-full rounded-xl
+    border border-gray-200
+    bg-white
+    px-4 py-3
+    text-sm text-gray-900
+    placeholder-gray-400
+    focus:outline-none focus:ring-2 focus:ring-indigo-200
+  "
+  placeholder="••••••••"
+/>
 
         {/* Button */}
         <motion.button
