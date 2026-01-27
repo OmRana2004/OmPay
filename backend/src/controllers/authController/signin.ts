@@ -35,25 +35,23 @@ const signin = async (req: Request, res: Response) => {
     }
 
     // 4️⃣ Create JWT
-    const token = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET!,
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
+      expiresIn: "1h",
+    });
 
     // 5️⃣ Set token in HTTP-only cookie
     res.cookie("token", token, {
-      httpOnly: true,               // JS access ❌ (XSS safe)
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 1000,        // 1 hour
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // prod = true, local = false
+      sameSite: "none", // 👈 MUST for Vercel + Render
+      maxAge: 60 * 60 * 1000, // 1 hour
+      path: "/", // recommended
     });
 
     // 6️⃣ Success response (NO token in body)
     return res.status(200).json({
       message: "Signin successful",
     });
-
   } catch (error) {
     console.error("Signin error:", error);
     return res.status(500).json({
