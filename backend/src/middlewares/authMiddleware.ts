@@ -11,36 +11,27 @@ const authMiddleware = (
   next: NextFunction
 ) => {
   try {
-    // READ TOKEN FROM AUTHORIZATION HEADER
-    const authHeader = req.headers.authorization;
+    // 1️⃣ Read token from cookie
+    const token = req.cookies.token;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!token) {
       return res.status(401).json({
-        success: false,
         message: "Not authenticated",
       });
     }
 
-    const token = authHeader.split(" ")[1];
+    // 2️⃣ Verify token
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET!
+    ) as JwtPayload & { userId: string };
 
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      return res.status(500).json({
-        success: false,
-        message: "JWT secret not configured",
-      });
-    }
-
-    const decoded = jwt.verify(token, secret) as JwtPayload & {
-      userId: string;
-    };
-
+    // 3️⃣ Attach userId to request
     req.userId = decoded.userId;
+
     next();
   } catch (error) {
-    console.error("Auth Error:", error);
     return res.status(401).json({
-      success: false,
       message: "Invalid or expired token",
     });
   }

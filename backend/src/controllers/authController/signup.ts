@@ -6,30 +6,48 @@ const signup = async (req: Request, res: Response) => {
   try {
     const { firstName, lastName, email, password, phone } = req.body;
 
-    // validation
+    // 1️⃣ Basic validation
     if (!firstName || !lastName || !email || !password || !phone) {
       return res.status(400).json({
-        success: false,
         message: "All fields are required",
       });
     }
 
-    // check existing user
+    // 2️⃣ Email format (basic safety)
+    if (!email.includes("@")) {
+      return res.status(400).json({
+        message: "Invalid email address",
+      });
+    }
+
+    // 3️⃣ Check existing user (email)
     const existingUser = await prismaClient.user.findUnique({
       where: { email },
+      select: { id: true },
     });
 
     if (existingUser) {
       return res.status(409).json({
-        success: false,
         message: "Email already exists",
       });
     }
 
-    // hash password
+    // 4️⃣ Check existing phone
+    const existingPhone = await prismaClient.phoneNumber.findUnique({
+      where: { number: phone },
+      select: { id: true },
+    });
+
+    if (existingPhone) {
+      return res.status(409).json({
+        message: "Phone number already exists",
+      });
+    }
+
+    // 5️⃣ Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // atomic signup (user + wallet + phone)
+    // 6️⃣ Atomic signup (user + wallet + phone)
     const user = await prismaClient.$transaction(async (tx) => {
       const newUser = await tx.user.create({
         data: {
@@ -40,7 +58,7 @@ const signup = async (req: Request, res: Response) => {
         },
       });
 
-      // hardcoded initial balance
+      // 💰 Initial balance (can be env-based later)
       await tx.wallet.create({
         data: {
           userId: newUser.id,
@@ -59,7 +77,6 @@ const signup = async (req: Request, res: Response) => {
     });
 
     return res.status(201).json({
-      success: true,
       message: "Signup successful",
       user: {
         id: user.id,
@@ -69,10 +86,9 @@ const signup = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error("Signup Error:", error);
+    console.error("Signup error:", error);
     return res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
+      message: "Internal server error",
     });
   }
 };

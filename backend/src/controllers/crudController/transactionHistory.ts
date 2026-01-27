@@ -4,23 +4,37 @@ import { prismaClient } from "../../db";
 
 const transactionHistory = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.userId as string;
-
-    if (!userId) {
-      return res.status(401).json({ message: "Unauthorized" });
+    // 🛑 Safety check (middleware ke baad bhi good practice)
+    if (!req.userId) {
+      return res.status(401).json({
+        message: "Not authenticated",
+      });
     }
+
+    const userId = req.userId;
 
     const transactions = await prismaClient.transaction.findMany({
       where: {
-        OR: [{ fromId: userId }, { toId: userId }],
+        OR: [
+          { fromId: userId },
+          { toId: userId },
+        ],
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: {
+        createdAt: "desc",
+      },
       include: {
         from: {
-          select: { firstName: true, lastName: true },
+          select: {
+            firstName: true,
+            lastName: true,
+          },
         },
         to: {
-          select: { firstName: true, lastName: true },
+          select: {
+            firstName: true,
+            lastName: true,
+          },
         },
       },
     });
@@ -30,7 +44,10 @@ const transactionHistory = async (req: AuthRequest, res: Response) => {
       transactions,
     });
   } catch (error) {
-    return res.status(500).json({ message: "Internal Server Error" });
+    console.error("Transaction history error:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
   }
 };
 

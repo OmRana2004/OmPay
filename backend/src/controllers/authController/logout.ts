@@ -1,9 +1,14 @@
 import { Request, Response } from "express";
 
 const logout = (_req: Request, res: Response) => {
-  //  Nothing to clear on server for header-based JWT
+  // 🍪 Clear auth cookie
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+
   return res.status(200).json({
-    success: true,
     message: "Logged out successfully",
   });
 };

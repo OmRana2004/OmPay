@@ -4,23 +4,25 @@ import { prismaClient } from "../../db";
 
 const sendMoney = async (req: AuthRequest, res: Response) => {
   try {
+    if (!req.userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
     const fromUserId = req.userId;
     const { to, amount } = req.body;
 
-    if (!fromUserId) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    if (!to || !amount || amount <= 0) {
+    // 1️⃣ Input validation
+    if (!to || typeof amount !== "number" || amount <= 0) {
       return res.status(400).json({ message: "Invalid input" });
     }
 
     let receiverUserId: string | null = null;
 
-    /* ---------- EMAIL ---------- */
+    // 2️⃣ Resolve receiver (email or phone)
     if (to.includes("@")) {
       const user = await prismaClient.user.findUnique({
         where: { email: to },
+        select: { id: true },
       });
 
       if (!user) {
@@ -28,12 +30,10 @@ const sendMoney = async (req: AuthRequest, res: Response) => {
       }
 
       receiverUserId = user.id;
-    }
-
-    /* ---------- PHONE ---------- */
-    else {
+    } else {
       const phone = await prismaClient.phoneNumber.findUnique({
         where: { number: to },
+        select: { userId: true },
       });
 
       if (!phone) {
@@ -43,13 +43,14 @@ const sendMoney = async (req: AuthRequest, res: Response) => {
       receiverUserId = phone.userId;
     }
 
+    // 3️⃣ Prevent self transfer
     if (receiverUserId === fromUserId) {
       return res
         .status(400)
         .json({ message: "Cannot send money to yourself" });
     }
 
-    /* ---------- TRANSACTION ---------- */
+    // 4️⃣ Atomic transaction
     const transaction = await prismaClient.$transaction(async (tx) => {
       const senderWallet = await tx.wallet.findUnique({
         where: { userId: fromUserId },
@@ -67,33 +68,42 @@ const sendMoney = async (req: AuthRequest, res: Response) => {
         throw new Error("Insufficient balance");
       }
 
+      // 🔒 Balance updates (atomic)
       await tx.wallet.update({
         where: { userId: fromUserId },
-        data: { balance: { decrement: amount } },
+        data: {
+          balance: {
+            decrement: amount,
+          },
+        },
       });
 
       await tx.wallet.update({
         where: { userId: receiverUserId! },
-        data: { balance: { increment: amount } },
+        data: {
+          balance: {
+            increment: amount,
+          },
+        },
       });
 
-      const txn = await tx.transaction.create({
+      // 🧾 Record transaction
+      return tx.transaction.create({
         data: {
           amount,
           fromId: fromUserId,
           toId: receiverUserId!,
         },
       });
-
-      return txn; // ✅ IMPORTANT
     });
 
     return res.status(200).json({
       message: "Money transferred successfully",
-      transactionId: transaction.id, // ✅ frontend needs this
+      transactionId: transaction.id,
     });
   } catch (error: any) {
-    console.error("Transfer Error:", error);
+    console.error("Send money error:", error);
+
     return res.status(400).json({
       message: error.message || "Transaction failed",
     });
