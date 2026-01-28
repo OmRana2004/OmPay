@@ -4,7 +4,7 @@ import { prismaClient } from "../../db";
 
 const transactionHistory = async (req: AuthRequest, res: Response) => {
   try {
-    // 🛑 Safety check (middleware ke baad bhi good practice)
+    // Safety check (middleware ke baad bhi good practice)
     if (!req.userId) {
       return res.status(401).json({
         message: "Not authenticated",

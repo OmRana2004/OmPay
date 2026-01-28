@@ -4,7 +4,7 @@ import { prismaClient } from "../../db";
 
 const me = async (req: AuthRequest, res: Response) => {
   try {
-    // 🛑 Safety check (should never happen, but good practice)
+    //  Safety check (should never happen, but good practice)
     if (!req.userId) {
       return res.status(401).json({
         message: "Not authenticated",
@@ -19,7 +19,7 @@ const me = async (req: AuthRequest, res: Response) => {
       },
     });
 
-    // 🛑 User deleted / invalid token edge case
+    // User deleted / invalid token edge case
     if (!user) {
       return res.status(404).json({
         message: "User not found",

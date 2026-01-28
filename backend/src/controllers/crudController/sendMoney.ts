@@ -11,14 +11,14 @@ const sendMoney = async (req: AuthRequest, res: Response) => {
     const fromUserId = req.userId;
     const { to, amount } = req.body;
 
-    // 1️⃣ Input validation
+    // Input validation
     if (!to || typeof amount !== "number" || amount <= 0) {
       return res.status(400).json({ message: "Invalid input" });
     }
 
     let receiverUserId: string | null = null;
 
-    // 2️⃣ Resolve receiver (email or phone)
+    // Resolve receiver (email or phone)
     if (to.includes("@")) {
       const user = await prismaClient.user.findUnique({
         where: { email: to },
@@ -43,14 +43,14 @@ const sendMoney = async (req: AuthRequest, res: Response) => {
       receiverUserId = phone.userId;
     }
 
-    // 3️⃣ Prevent self transfer
+    // Prevent self transfer
     if (receiverUserId === fromUserId) {
       return res
         .status(400)
         .json({ message: "Cannot send money to yourself" });
     }
 
-    // 4️⃣ Atomic transaction
+    // Atomic transaction
     const transaction = await prismaClient.$transaction(async (tx) => {
       const senderWallet = await tx.wallet.findUnique({
         where: { userId: fromUserId },
@@ -68,7 +68,7 @@ const sendMoney = async (req: AuthRequest, res: Response) => {
         throw new Error("Insufficient balance");
       }
 
-      // 🔒 Balance updates (atomic)
+      // Balance updates (atomic)
       await tx.wallet.update({
         where: { userId: fromUserId },
         data: {
@@ -87,7 +87,7 @@ const sendMoney = async (req: AuthRequest, res: Response) => {
         },
       });
 
-      // 🧾 Record transaction
+      // Record transaction
       return tx.transaction.create({
         data: {
           amount,

@@ -6,21 +6,21 @@ const signup = async (req: Request, res: Response) => {
   try {
     const { firstName, lastName, email, password, phone } = req.body;
 
-    // 1️⃣ Basic validation
+    // Basic validation
     if (!firstName || !lastName || !email || !password || !phone) {
       return res.status(400).json({
         message: "All fields are required",
       });
     }
 
-    // 2️⃣ Email format (basic safety)
+    // Email format (basic safety)
     if (!email.includes("@")) {
       return res.status(400).json({
         message: "Invalid email address",
       });
     }
 
-    // 3️⃣ Check existing user (email)
+    // Check existing user (email)
     const existingUser = await prismaClient.user.findUnique({
       where: { email },
       select: { id: true },
@@ -32,7 +32,7 @@ const signup = async (req: Request, res: Response) => {
       });
     }
 
-    // 4️⃣ Check existing phone
+    //  Check existing phone
     const existingPhone = await prismaClient.phoneNumber.findUnique({
       where: { number: phone },
       select: { id: true },
@@ -44,10 +44,10 @@ const signup = async (req: Request, res: Response) => {
       });
     }
 
-    // 5️⃣ Hash password
+    //  Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 6️⃣ Atomic signup (user + wallet + phone)
+    //  Atomic signup (user + wallet + phone)
     const user = await prismaClient.$transaction(async (tx) => {
       const newUser = await tx.user.create({
         data: {
@@ -58,7 +58,7 @@ const signup = async (req: Request, res: Response) => {
         },
       });
 
-      // 💰 Initial balance (can be env-based later)
+      // Initial balance (can be env-based later)
       await tx.wallet.create({
         data: {
           userId: newUser.id,

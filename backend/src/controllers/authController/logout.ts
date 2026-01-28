@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 const logout = (_req: Request, res: Response) => {
-  // 🍪 Clear auth cookie
+  // Clear auth cookie
   res.clearCookie("token", {
     httpOnly: true,
     sameSite: "lax",

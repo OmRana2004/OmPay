@@ -7,48 +7,48 @@ const signin = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    // 1️⃣ Validate input
+    // Validate input
     if (!email || !password) {
       return res.status(400).json({
         message: "Email and password are required",
       });
     }
 
-    // 2️⃣ Find user
+    // Find user
     const user = await prismaClient.user.findUnique({
       where: { email },
     });
 
     if (!user) {
       return res.status(401).json({
-        message: "Invalid email or password",
+        message: "Invalid email",
       });
     }
 
-    // 3️⃣ Check password
+    // Check password
     const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
       return res.status(401).json({
-        message: "Invalid email or password",
+        message: "Invalid password",
       });
     }
 
-    // 4️⃣ Create JWT
+    // Create JWT
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
       expiresIn: "1h",
     });
 
-    // 5️⃣ Set token in HTTP-only cookie
+    // Set token in HTTP-only cookie
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // prod = true, local = false
-      sameSite: "none", // 👈 MUST for Vercel + Render
+      sameSite: "none", //  MUST for Vercel + Render
       maxAge: 60 * 60 * 1000, // 1 hour
       path: "/", // recommended
     });
 
-    // 6️⃣ Success response (NO token in body)
+    // Success response (NO token in body)
     return res.status(200).json({
       message: "Signin successful",
     });

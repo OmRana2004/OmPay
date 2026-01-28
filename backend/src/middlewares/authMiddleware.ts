@@ -11,7 +11,7 @@ const authMiddleware = (
   next: NextFunction
 ) => {
   try {
-    // 1️⃣ Read token from cookie
+    // Read token from cookie
     const token = req.cookies.token;
 
     if (!token) {
@@ -20,13 +20,13 @@ const authMiddleware = (
       });
     }
 
-    // 2️⃣ Verify token
+    // Verify token
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET!
     ) as JwtPayload & { userId: string };
 
-    // 3️⃣ Attach userId to request
+    // Attach userId to request
     req.userId = decoded.userId;
 
     next();
