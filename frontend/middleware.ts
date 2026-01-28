@@ -4,8 +4,8 @@ import type { NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // 🔹 Direct access control NOT here
-  // 🔹 Backend APIs handle real auth
+  // Direct access control NOT here
+  // Backend APIs handle real auth
 
   // Optional: prevent accessing root
 //   if (pathname === "/") {

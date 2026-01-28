@@ -42,7 +42,7 @@ export default function Signup() {
     try {
       await api.post("/signup", form);
 
-      // ✅ Signup ke baad login page
+      // Signup ke baad login page
       router.replace("/signin");
     } catch (e: any) {
       alert(e?.response?.data?.message || "Signup failed");

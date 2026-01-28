@@ -7,9 +7,10 @@ export default function Home() {
   const router = useRouter();
 
   return (
-    <main className="relative min-h-screen overflow-hidden flex items-center justify-center px-4
-                     bg-[#F6F7FB]">
-
+    <main
+      className="relative min-h-screen overflow-hidden flex items-center justify-center px-4
+                     bg-[#F6F7FB]"
+    >
       {/* Soft background glows */}
       <div className="absolute -top-32 -left-32 h-72 w-72 rounded-full bg-indigo-200/30 blur-3xl" />
       <div className="absolute top-1/3 -right-32 h-80 w-80 rounded-full bg-sky-200/30 blur-3xl" />
@@ -23,17 +24,16 @@ export default function Home() {
         className="relative z-10 w-full max-w-sm"
       >
         <div className="rounded-2xl bg-white border border-gray-200 shadow-sm px-6 py-8 text-center">
-
           {/* Logo */}
-          <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center
-                          rounded-2xl bg-gray-900 text-white text-xl font-semibold shadow-md">
+          <div
+            className="mx-auto mb-6 flex h-14 w-14 items-center justify-center
+                          rounded-2xl bg-gray-900 text-white text-xl font-semibold shadow-md"
+          >
             O
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl font-semibold text-gray-900">
-            OmPayy
-          </h1>
+          <h1 className="text-2xl font-semibold text-gray-900">OmPayy</h1>
 
           {/* Subtitle */}
           <p className="mt-2 text-sm text-gray-500 leading-relaxed">
