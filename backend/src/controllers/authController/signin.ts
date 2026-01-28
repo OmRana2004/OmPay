@@ -41,12 +41,13 @@ const signin = async (req: Request, res: Response) => {
 
     // Set token in HTTP-only cookie
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // prod = true, local = false
-      sameSite: "none", //  MUST for Vercel + Render
-      maxAge: 60 * 60 * 1000, // 1 hour
-      path: "/", // recommended
-    });
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  maxAge: 60 * 60 * 1000, // 1 hour
+  path: "/",
+});
+
 
     // Success response (NO token in body)
     return res.status(200).json({
