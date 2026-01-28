@@ -33,7 +33,7 @@ export default function Home() {
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl font-semibold text-gray-900">OmPayy</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">OmPaY</h1>
 
           {/* Subtitle */}
           <p className="mt-2 text-sm text-gray-500 leading-relaxed">
